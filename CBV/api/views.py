@@ -6,11 +6,13 @@ from .serializers import StudentSerializer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-# Fetching data from database
-@csrf_exempt
-def  student_api(request):
-    # Read
-    if request.method == 'GET':
+from django.utils.decorators import method_decorator
+from django.views import View
+
+
+@method_decorator(csrf_exempt, name = 'dispatch')
+class StudentAPI(View):
+    def get(self, request, *args, **kwargs):
         json_data = request.body #JSON data come from request
         stream = io.BytesIO(json_data) #Binary form of data in memory
         python_data = JSONParser().parse(stream) #stream got converted into python_native_data_type
@@ -25,8 +27,8 @@ def  student_api(request):
         json_data = JSONRenderer().render(serializer.data)   #rendering data from complex data     
         return HttpResponse(json_data, content_type = 'application/json') #Sending Response to Request
 
-    # Create
-    if request.method == 'POST':
+
+    def post(self, request, *args, **kwargs):
         json_data = request.body
         stream =io.BytesIO(json_data)
         python_data = JSONParser().parse(stream)
@@ -38,9 +40,8 @@ def  student_api(request):
             return HttpResponse(json_data, content_type = 'application/json')
         json_data = JSONRenderer().render(serializer.errors)
         return HttpResponse(json_data, content_type = 'application/json') 
-    
-    # Update
-    if request.method == "PUT":
+
+    def put(self, request, *args, **kwargs):
         json_data = request.body
         stream =io.BytesIO(json_data)
         python_data = JSONParser().parse(stream)
@@ -54,16 +55,22 @@ def  student_api(request):
             return HttpResponse(json_data, content_type='application/json')
         json_data = JSONRenderer().render(res)
         return HttpResponse(json_data, content_type='application/json')
-    
-    # Delete
-    if request.method == 'DELETE':
-        json_data = request.body
-        stream =io.BytesIO(json_data)
-        python_data = JSONParser().parse(stream)
-        id = python_data.get('id')
-        stu = Student.objects.get(id=id)
-        stu.delete()
-        res = {'msg':'Data Deleted!!'}
-        # json_data = JSONRenderer().render(res)
-        # return HttpResponse(json_data, content_type = 'application/json')
-        return JsonResponse(res, safe=False)
+
+
+    def delete(self, request, *args, **kwargs):
+            json_data = request.body
+            stream =io.BytesIO(json_data)
+            python_data = JSONParser().parse(stream)
+            id = python_data.get('id')
+            stu = Student.objects.get(id=id)
+            stu.delete()
+            res = {'msg':'Data Deleted!!'}
+            # json_data = JSONRenderer().render(res)
+            # return HttpResponse(json_data, content_type = 'application/json')
+            return JsonResponse(res, safe=False)
+
+
+
+
+
+

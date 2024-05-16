@@ -21,7 +21,7 @@ def get_data(id = None):
 
     print(data)
     
-# get_data(2)
+# get_data()
 
 # CREATE
 def post_data():
@@ -35,14 +35,14 @@ def post_data():
     r=requests.post(url = URL,data = json_data)
     data = r.json()
     print(data)
-
+#
 # post_data()
 
 
 # Update 
 def update_data():
     data = {
-        'id':3,
+        'id':2,
         'name':'shahzaib',
         'city':'Islamabad',
     }
@@ -59,7 +59,7 @@ def update_data():
 # Delete
 def delete_data():
     data = {
-        'id':3
+        'id':2
     }
 
     json_data = json.dumps(data)
@@ -68,4 +68,4 @@ def delete_data():
     print(data)
 
 
-# delete_data()
+delete_data()
