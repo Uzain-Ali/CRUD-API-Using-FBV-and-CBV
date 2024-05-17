@@ -1,35 +1,14 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from .models import Student
 from .serializers import StudentSerializer
 from rest_framework import status
-# Create your views here.
-# By default GET
-# @api_view()
-# def hello_world(request):
-#     return Response({'msg':'Hello World'})
-
-# GET mentioned
-# @api_view(['GET'])
-# def hello_world(request):
-#     return Response({'msg':'Hello Wor ld'})
-
-# POST Method
-# @api_view(['POST','GET'])
-# def hello_world(request):
-#     if request.method =="GET":
-#         return Response({'msg': 'This is GET Request'})
-#     if request.method =="POST":
-#         print(request.data)
-#         return Response({'msg':'This is POST Request', 'data':request.data})
+from rest_framework.views import APIView
 
 
 
-# CRUD using api_view
-@api_view(['GET', 'POST', 'PUT','PATCH', 'DELETE'])
-def student_api(request, pk = None):
-    if request.method =='GET':
+class StudentAPI(APIView):
+    def get(self, request,pk=None, format = None):
         # id = request.data.get('id')
         id = pk
         if id is not None:
@@ -40,14 +19,14 @@ def student_api(request, pk = None):
         serializer = StudentSerializer(stu, many=True)
         return Response(serializer.data)
 
-    if request.method =="POST":
+    def post(self, request, format=None):
         serializer = StudentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    if request.method == "PUT":
+    def put(self, request,pk , format = None):
         # id = request.data.get('id')
         id = pk
 
@@ -59,7 +38,8 @@ def student_api(request, pk = None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    if request.method == "PATCH":
+
+    def patch(self, request, pk , format = None):
         # id = request.data.get('id')
         id = pk
 
@@ -71,11 +51,17 @@ def student_api(request, pk = None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-
-    if request.method == "DELETE":
+    def delete(self, request, pk , format = None):
         # id =request.data.get('id')
         id = pk
 
         stu = Student.objects.get(pk = id)
         stu.delete()
         return Response({'msg':'Data Deleted...'})
+
+
+
+
+
+
+
