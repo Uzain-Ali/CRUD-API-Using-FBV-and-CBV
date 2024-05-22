@@ -6,5 +6,9 @@ from rest_framework.generics import ListAPIView
 
 
 class StudentList(ListAPIView):
-    queryset = StudentData.objects.filter(passby="uzain95")
+    queryset = StudentData.objects.all()
     serializer_class= StudentSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return StudentData.objects.filter(passby=user)
