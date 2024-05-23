@@ -2,12 +2,11 @@ from django.shortcuts import render
 from .serializers import StudentSerializer
 from .models import StudentData
 from rest_framework.generics import ListAPIView
-from rest_framework.filters import OrderingFilter
+from .mypagination import MyPageNumberPagination
+
+
 # Create your views here.
-
-
 class StudentList(ListAPIView):
     queryset = StudentData.objects.all()
-    serializer_class= StudentSerializer
-    filter_backends = [OrderingFilter]
-    ordering_fields = '_all_'
+    serializer_class = StudentSerializer
+    pagination_class = MyPageNumberPagination
